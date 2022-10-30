@@ -17,11 +17,9 @@ import java.util.Vector;
 public class Portar {
 	
 	public static Grafo resGrafo (Grafo grafo) {
-		//List<Grafo> pilha = new ArrayList<Grafo>();
 		Stack<Grafo> pilha = new Stack<Grafo>();
 		grafo.atualizaLista(); //Para criar a lista
-		boolean para = false;
-		while(!para) {
+		while(true) {
 			List<List<Integer>> lista = new ArrayList<List<Integer>>(grafo.getLista());
 			lista.sort(Comparator.comparing(l -> l.get(2)));
 			int id = 0;
@@ -31,64 +29,32 @@ public class Portar {
 					return grafo;
 				}
 			}
-			if(!para) {
-				if(lista.get(id).get(2) == 0) {//Se não houverem possibilidades para o vértice descolorido com menores possibilidades (0) para o vertice descolorido então volta
-					grafo = pilha.pop();//Pegue o último elemento da pilha
-				} else {//Existem pelo menos uma possibilidade de coloração
-					if(lista.get(id).get(2) > 1) {//Se existem mais
-						//Escolhemos uma cor
-						int cor = 0;
-						for(Integer pCor : ((List<Integer>) grafo.getMatriz().get(lista.get(id).get(0)).get(lista.get(id).get(1)).get(1))) {
-							if(cor == 0) {//Se for a cor 0
-								cor = pCor; //Só atualiza
-							} else if(grafo.getRestanteCor(pCor) < grafo.getRestanteCor(cor)) {//Se não for e a nova cor tiver menos usos restantes que a atual
-								cor = pCor; //Atualize pois são maiores as chances de se der ruim na coloração, dar ruim logo
-							}
+			if(lista.get(id).get(2) == 0) {//Se não houverem possibilidades para o vértice descolorido com menores possibilidades (0) para o vertice descolorido então volta
+				grafo = pilha.pop();//Pegue o último elemento da pilha
+			} else {//Existem pelo menos uma possibilidade de coloração
+				if(lista.get(id).get(2) > 1) {//Se existem mais
+					//Escolhemos uma cor
+					int cor = 0;
+					for(Integer pCor : ((List<Integer>) grafo.getMatriz().get(lista.get(id).get(0)).get(lista.get(id).get(1)).get(1))) {
+						if(cor == 0) {//Se for a cor 0
+							cor = pCor; //Só atualiza
+						} else if(grafo.getRestanteCor(pCor) < grafo.getRestanteCor(cor)) {//Se não for e a nova cor tiver menos usos restantes que a atual
+							cor = pCor; //Atualize pois são maiores as chances de se der ruim na coloração, dar ruim logo
 						}
-						((List<Integer>) grafo.getMatriz().get(lista.get(id).get(0)).get(lista.get(id).get(1)).get(1)).remove((Integer) cor); //Remova essa cor das possibilidades
-						grafo.atualizaLista();
-						pilha.push(grafo.copyMatriz()); //Adicione o grafo sem a possibilidade da cor a ser escolhida
-						grafo.getMatriz().get(lista.get(id).get(0)).get(lista.get(id).get(1)).set(0, cor);//Colore com a cor pega
-						attVizinhos(lista.get(id).get(0), lista.get(id).get(1),grafo.getMatriz().size(),grafo, cor);//Atualize as cores dos vizinhos, desde que dele mesmo já foi removido
-					} else {//Só existe uma cor, escolha ela e pronto
-						Integer cor = ((List<Integer>) grafo.getMatriz().get(lista.get(id).get(0)).get(lista.get(id).get(1)).get(1)).get(0);//Pega a primeira cor
-						grafo.getMatriz().get(lista.get(id).get(0)).get(lista.get(id).get(1)).set(0, cor);//Colore com a cor pega
-						attVizinhos(lista.get(id).get(0), lista.get(id).get(1),grafo.getMatriz().size(),grafo, cor);//Atualize as cores dos vizinhos e dele mesmo
 					}
+					((List<Integer>) grafo.getMatriz().get(lista.get(id).get(0)).get(lista.get(id).get(1)).get(1)).remove((Integer) cor); //Remova essa cor das possibilidades
+					grafo.atualizaLista();
+					pilha.push(grafo.copyMatriz()); //Adicione o grafo sem a possibilidade da cor a ser escolhida
+					grafo.getMatriz().get(lista.get(id).get(0)).get(lista.get(id).get(1)).set(0, cor);//Colore com a cor pega
+					attVizinhos(lista.get(id).get(0), lista.get(id).get(1),grafo.getMatriz().size(),grafo, cor);//Atualize as cores dos vizinhos, desde que dele mesmo já foi removido
+				} else {//Só existe uma cor, escolha ela e pronto
+					Integer cor = ((List<Integer>) grafo.getMatriz().get(lista.get(id).get(0)).get(lista.get(id).get(1)).get(1)).get(0);//Pega a primeira cor
+					grafo.getMatriz().get(lista.get(id).get(0)).get(lista.get(id).get(1)).set(0, cor);//Colore com a cor pega
+					attVizinhos(lista.get(id).get(0), lista.get(id).get(1),grafo.getMatriz().size(),grafo, cor);//Atualize as cores dos vizinhos e dele mesmo
 				}
 			}
 		}
-		return grafo;
 	}
-	
-	/*
-	def resSudoku(grafo, lista, maisP): #algoritmo para resolução do sudoku
-	  #Organizar a lista de acordo com os vértices coloridos
-	  lista = sorted(lista, key=lambda l: l[0][2]) #ordena listapor número de possibilidades de um vértice
-	  while(grafo[lista[80][0][0]][lista[80][0][1]][0] == 0):#enquanto grafo não for colorido/Ultimo item da lista não for colorido
-	    id = 0
-	    for i in range(81):
-	      if(grafo[lista[id][0][0]][lista[id][0][1]][0] != 0): #se for um vértice colorido, pule ele
-	        id = id + 1 #pular essa possibilidade
-
-	    if((len(grafo[lista[id][0][0]][lista[id][0][1]][1]) == 0) and (grafo[lista[id][0][0]][lista[id][0][1]][0] == 0)): #Se o vértice da lista que possui a menor numero de possibilidades, possuir zero e não for colorido
-	      #Volte o algoritmo pois esse caminho impossibilitou a coloração da instância
-	      t = len(maisP) - 1
-	      grafo = maisP[t][0]
-	      lista = maisP[t][1]
-	      maisP.pop(t)
-	    else:
-	      cor = grafo[lista[id][0][0]][lista[id][0][1]][1][0] #recebendo a cor que vai colorir o vértice
-	      grafo = attPoss(grafo, [lista[id][0]], cor)
-	      lista[id][0][2] = lista[id][0][2] - 1 #diminui o tamanho da lista de possibilidades
-	      if(lista[id][0][2] != 0):
-	        maisP.append((grafo.copy(), lista.copy()))
-	      grafo[lista[id][0][0]][lista[id][0][1]][0] = cor #colorir o vértice com a primeira cor da lista de possibilidades
-	      grafo = attPoss(grafo, lista[id][1:], cor) #muda as possibilidades de cores das posições adjacentes
-	      lista = attTamanho(grafo, lista) #atualiza os valores de tamanhos de possibilidades de cores da lista
-	      lista = sorted(lista, key=lambda l: l[0][2]) #reordena lista
-	  return grafo*/
-	
 	
 	//n = dimensão do sudoku nxn, lin = número de instâncias de sudoku a serem lisdas do arquivo
 	public static List<Grafo> criaGrafos(String pos, int n, int lin) { //Recebe String indicando posição/nome do arquivo e então lê e cria a array de matrizes nxn do arquivo
@@ -220,7 +186,6 @@ public class Portar {
 	public static void main(String args[]) {
 		List<Grafo> teste = criaGrafos("src\\arquivosDeTestes\\teste.txt", 9, 3);
 		imprimaSudoku(9, teste.get(2));
-		//Stack<Grafo> pilha = new Stack<Grafo>();
 		teste.set(2, resGrafo(teste.get(2)));
 		System.out.println("Resolvido:");
 		imprimaSudoku(9, teste.get(2));

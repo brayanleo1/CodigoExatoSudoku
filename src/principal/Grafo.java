@@ -16,12 +16,6 @@ public class Grafo {
 		restantes = new ArrayList<Integer>();
 	}
 	
-	public Grafo(final List<List<Vector<Object>>> matriz, final List<List<Integer>> lista, final List<Integer> restantes) {
-		this.matriz = matriz;
-		this.lista = lista;
-		this.restantes = restantes;
-	}
-	
 	public void setMatriz(List<List<Vector<Object>>> matriz) {
 		this.matriz = matriz;
 	}
@@ -78,24 +72,9 @@ public class Grafo {
 			}
 		}
 	}
-	
-	public boolean isVazio() {
-		boolean eh = true;
-		for(Integer i : restantes) {
-			if(i != 0) {
-				eh = false;
-				break;
-			}
-		}
-		return eh;
-	}
-	
+		
 	public Integer getRestanteCor(Integer cor) {
 		return restantes.get(cor - 1);
-	}
-	
-	public List<Integer> getRestantes() {
-		return restantes;
 	}
 	
 	public void setLista(List<List<Integer>> lista) {

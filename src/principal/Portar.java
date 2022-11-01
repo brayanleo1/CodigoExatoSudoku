@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -114,7 +115,7 @@ public class Portar {
 	public static void imprimaSudoku(int n,Grafo grafo) {
 		for (int x = 0; x < n; x++) {
 			for (int y = 0; y < n; y++) {
-				System.out.print(grafo.getMatriz().get(x).get(y).get(0)+""+grafo.getMatriz().get(x).get(y).get(1));
+				System.out.print(grafo.getMatriz().get(x).get(y).get(0));
 				if(y != (n-1)) {
 					System.out.print("|");
 				} else {
@@ -184,16 +185,55 @@ public class Portar {
 	}
 	
 	public static void main(String args[]) {
-		List<Grafo> teste = criaGrafos("src\\arquivosDeTestes\\teste.txt", 9, 3);
-		imprimaSudoku(9, teste.get(2));
-		teste.set(2, resGrafo(teste.get(2)));
-		System.out.println("Resolvido:");
-		imprimaSudoku(9, teste.get(2));
-		System.out.println("novo sudoku");
-		List<Grafo> teste2 = criaGrafos("src\\arquivosDeTestes\\teste2.txt", 16, 2);
-		imprimaSudoku(16, teste2.get(0));
-		teste2.set(0, resGrafo(teste2.get(0)));
-		System.out.println("Resolvido denovo:");
-		imprimaSudoku(16, teste2.get(0));
+		//Listas de grafos para serem usados nos testes
+		List<Grafo> fac9 = criaGrafos("src\\arquivosDeTestes\\9x9facil.txt", 9, 5);
+		List<Grafo> med9 = criaGrafos("src\\arquivosDeTestes\\9x9medio.txt", 9, 5);
+		List<Grafo> dif9 = criaGrafos("src\\arquivosDeTestes\\9x9dificil.txt", 9, 5);
+		List<Grafo> mui_dif9 = criaGrafos("src\\arquivosDeTestes\\9x9muito_dificil.txt", 9, 5);
+		List<Grafo> fac16 = criaGrafos("src\\arquivosDeTestes\\16x16facil.txt", 16, 5);
+		List<Grafo> med16 = criaGrafos("src\\arquivosDeTestes\\16x16medio.txt", 16, 5);
+		List<Grafo> fac25 = criaGrafos("src\\arquivosDeTestes\\25x25facil.txt", 25, 1);
+		long tf9 = 0, tm9 = 0, td9 = 0, tmd9 = 0, tf16 = 0, tm16 = 0, tf25=0;
+		tf9= System.currentTimeMillis();
+		for(int i = 0; i < 5; i++) {
+			fac9.set(i, resGrafo(fac9.get(i)));
+		}
+		tf9= System.currentTimeMillis() - tf9;
+		tm9 = System.currentTimeMillis();
+		for(int i = 0; i < 5; i++) {
+			med9.set(i, resGrafo(med9.get(i)));
+		}
+		tm9= System.currentTimeMillis() - tm9;
+		td9 = System.currentTimeMillis();
+		for(int i = 0; i < 5; i++) {
+			dif9.set(i, resGrafo(dif9.get(i)));
+		}
+		td9 = System.currentTimeMillis() - td9;
+		tmd9 = System.currentTimeMillis();
+		for(int i = 0; i < 5; i++) {
+			mui_dif9.set(i, resGrafo(mui_dif9.get(i)));
+		}
+		tmd9 = System.currentTimeMillis() - tmd9;
+		tf16 = System.currentTimeMillis();
+		for(int i = 0; i < 5; i++) {
+			fac16.set(i, resGrafo(fac16.get(i)));
+		}
+		tf16 = System.currentTimeMillis() - tf16;
+		tm16 = System.currentTimeMillis();
+		for(int i = 0; i < 5; i++) {
+			med16.set(i, resGrafo(med16.get(i)));
+		}
+		tm16 = System.currentTimeMillis() - tm16;
+		tf25 = System.currentTimeMillis();
+		fac25.set(0, resGrafo(fac25.get(0)));
+		tf25 = System.currentTimeMillis() - tf25;
+		System.out.println("Tempos médios respectivos");
+		System.out.println(((tf9)/5)+"ms");
+		System.out.println(((tm9)/5)+"ms");
+		System.out.println(((td9)/5)+"ms");
+		System.out.println(((tmd9)/5)+"ms");
+		System.out.println(((tf16)/5)+"ms");
+		System.out.println(((tm16)/5)+"ms");
+		System.out.println((tf25)+"ms");		
 	}
 }
